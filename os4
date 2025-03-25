@@ -1,229 +1,155 @@
 #include <stdio.h>
-#define NUM_PROCESSES 5 // Adjust as needed
-#define NUM_RESOURCES 3 // Adjust as needed
-int available[NUM_RESOURCES];
-int max[NUM_PROCESSES][NUM_RESOURCES];
-int allocation[NUM_PROCESSES][NUM_RESOURCES];
-int need[NUM_PROCESSES][NUM_RESOURCES];
-// Function prototypes
-void acceptAvailable();
-void acceptAllocation();
-void acceptMax();
-void calculateNeed();
-void displayAllocation();
-void displayMax();
-void displayNeed();
-void displayAvailable();
-int main() {
-int choice;
-do {
-printf("\nBanker's Algorithm Menu:\n");
-printf("1. Accept Available Resources\n");
-printf("2. Accept Allocation Matrix\n");
-printf("3. Accept Max Matrix\n");
-printf("4. Display Allocation Matrix\n");
-printf("5. Display Max Matrix\n");
-printf("6. Display Need Matrix\n");
-printf("7. Display Available Resources\n");
-printf("8. Exit\n");
-printf("Enter your choice: ");
-scanf("%d", &choice);
-switch (choice) {
-case 1:
-acceptAvailable();
-break;
-case 2:
-acceptAllocation();
-break;
-case 3:
-acceptMax();
-break;
-case 4:
-displayAllocation();
-break;
-case 5:
-displayMax();
-break;
-case 6:
-calculateNeed();
-displayNeed();
-break;
-case 7:
-displayAvailable();
-break;
-case 8:
-printf("Exiting...\n");
-break;
-default:
-printf("Invalid choice. Please try again.\n");
-}
-} while (choice != 8);
-return 0;
-}
-void acceptAvailable() {
-printf("\nEnter available resources:\n");
-for (int i = 0; i < NUM_RESOURCES; i++) {
-printf("Resource %d: ", i + 1);
-scanf("%d", &available[i]);
-}
-}
-void acceptAllocation() {
-printf("\nEnter allocation matrix:\n");
-for (int i = 0; i < NUM_PROCESSES; i++) {
-printf("Enter allocation for process P%d: ", i + 1);
-for (int j = 0; j < NUM_RESOURCES; j++) {
-scanf("%d", &allocation[i][j]);
-}
-}
-}
-void acceptMax() {
-printf("\nEnter max matrix:\n");
-for (int i = 0; i < NUM_PROCESSES; i++) {
-printf("Enter max for process P%d: ", i + 1);
-for (int j = 0; j < NUM_RESOURCES; j++) {
-scanf("%d", &max[i][j]);
-}
-}
-}
-void displayAllocation() {
-printf("\nAllocation Matrix:\n");
-printf(" ");
-for (int i = 0; i < NUM_RESOURCES; i++) {
-printf("R%d ", i + 1);
-}
-printf("\n");
-for (int i = 0; i < NUM_PROCESSES; i++) {
-printf("P%d ", i + 1);
-for (int j = 0; j < NUM_RESOURCES; j++) {
-printf("%d ", allocation[i][j]);
-}
-printf("\n");
-}
-}
-void displayMax() {
-printf("\nMax Matrix:\n");
-printf(" ");
-for (int i = 0; i < NUM_RESOURCES; i++) {
-printf("R%d ", i + 1);
-}
-printf("\n");
-for (int i = 0; i < NUM_PROCESSES; i++) {
-printf("P%d ", i + 1);
-for (int j = 0; j < NUM_RESOURCES; j++) {
-printf("%d ", max[i][j]);
-}
-printf("\n");
-}
-}
-void calculateNeed() {
-// Calculate need based on allocation and max matrices
-for (int i = 0; i < NUM_PROCESSES; i++) {
-for (int j = 0; j < NUM_RESOURCES; j++) {
+#define PROCESS_COUNT 5
+#define RESOURCE_COUNT 3
+int allocation[PROCESS_COUNT][RESOURCE_COUNT] = {
+{0, 1, 0},
+{4, 0, 0},
+{5, 0, 4},
+{4, 3, 3},
+{2, 2, 4}
+};
+int max[PROCESS_COUNT][RESOURCE_COUNT] = {
+{0, 0, 0},
+{5, 2, 2},
+{1, 0, 4},
+{4, 4, 4},
+{6, 5, 5}
+};
+int available[RESOURCE_COUNT] = {7, 2, 6};
+int need[PROCESS_COUNT][RESOURCE_COUNT];
+void calculateNeedMatrix() {
+for (int i = 0; i < PROCESS_COUNT; i++) {
+for (int j = 0; j < RESOURCE_COUNT; j++) {
 need[i][j] = max[i][j] - allocation[i][j];
 }
 }
 }
-void displayNeed() {
-printf("\nNeed Matrix:\n");
-printf(" ");
-for (int i = 0; i < NUM_RESOURCES; i++) {
-printf("R%d ", i + 1);
-}
-printf("\n");
-for (int i = 0; i < NUM_PROCESSES; i++) {
-printf("P%d ", i + 1);
-for (int j = 0; j < NUM_RESOURCES; j++) {
-printf("%d ", need[i][j]);
+void displayMatrix(int matrix[PROCESS_COUNT][RESOURCE_COUNT], char *name) {
+printf("%s Matrix:\n", name);
+for (int i = 0; i < PROCESS_COUNT; i++) {
+for (int j = 0; j < RESOURCE_COUNT; j++) {
+printf("%d ", matrix[i][j]);
 }
 printf("\n");
 }
 }
 void displayAvailable() {
-printf("\nAvailable Resources:\n");
-for (int i = 0; i < NUM_RESOURCES; i++) {
-printf("Resource %d: %d\n", i + 1, available[i]);
+printf("Available Resources:\n");
+for (int i = 0; i < RESOURCE_COUNT; i++) {
+printf("%d ", available[i]);
+}
+printf("\n");
+}
+int main() {
+int choice;
+while (1) {
+printf("\nMenu:\n");
+printf("1. Accept Available Resources\n");
+printf("2. Display Allocation and Max\n");
+printf("3. Find and Display Need\n");
+printf("4. Display Available Resources\n");
+printf("5. Exit\n");
+printf("Enter your choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1:
+printf("Enter available resources for A, B, and C: ");
+for (int i = 0; i < RESOURCE_COUNT; i++) {
+scanf("%d", &available[i]);
+}
+break;
+case 2:
+displayMatrix(allocation, "Allocation");
+displayMatrix(max, "Max");
+break;
+case 3:
+calculateNeedMatrix();
+displayMatrix(need, "Need");
+break;
+case 4:
+displayAvailable();
+break;
+case 5:
+return 0;
+default:
+printf("Invalid choice!\n");
 }
 }
-
+return 0;
+}
 
 2
 
 #include <stdio.h>
 #include <stdlib.h>
-void sortRequests(int *requests, int size);
-void scan(int *requests, int size, int headPosition, int totalBlocks, int direction);
+void sort(int arr[], int n) {
+int temp;
+for (int i = 0; i < n - 1; i++) {
+for (int j = 0; j < n - i - 1; j++) {
+if (arr[j] > arr[j + 1]) {
+temp = arr[j];
+arr[j] = arr[j + 1];
+arr[j + 1] = temp;
+}
+}
+}
+}
+void scan(int requests[], int n, int head, int direction, int disk_size) {
+int total_movement = 0;
+int current = head;
+// Sort the requests in ascending order
+sort(requests, n);
+int index;
+for (index = 0; index < n; index++) {
+if (requests[index] > head) {
+break;
+}
+}
+printf("Order of servicing requests: ");
+if (direction == 0) { // Move left
+for (int i = index - 1; i >= 0; i--) {
+printf("%d ", requests[i]);
+total_movement += abs(current - requests[i]);
+current = requests[i];
+}
+total_movement += current;
+current = 0;
+for (int i = index; i < n; i++) {
+printf("%d ", requests[i]);
+total_movement += abs(current - requests[i]);
+current = requests[i];
+}
+} else { // Move right
+for (int i = index; i < n; i++) {
+printf("%d ", requests[i]);
+total_movement += abs(current - requests[i]);
+current = requests[i];
+}
+total_movement += abs(disk_size - 1 - current);
+current = disk_size - 1;
+for (int i = index - 1; i >= 0; i--) {
+printf("%d ", requests[i]);
+total_movement += abs(current - requests[i]);
+current = requests[i];
+}
+}
+printf("\nTotal head movement: %d\n", total_movement);
+}
 int main() {
-int totalBlocks, headPosition, direction, requestSize;
-printf("Enter the total number of disk blocks: ");
-scanf("%d", &totalBlocks);
-printf("Enter the disk request string size: ");
-scanf("%d", &requestSize);
-int *requests = (int *)malloc(requestSize * sizeof(int));
-printf("Enter the disk request string: ");
-for (int i = 0; i < requestSize; i++) {
+int n, head, direction, disk_size;
+printf("Enter total number of disk blocks: ");
+scanf("%d", &disk_size);
+printf("Enter number of requests: ");
+scanf("%d", &n);
+int requests[n];
+printf("Enter the request string: ");
+for (int i = 0; i < n; i++) {
 scanf("%d", &requests[i]);
 }
-printf("Enter the starting head position: ");
-scanf("%d", &headPosition);
-printf("Enter the direction (0 for Left, 1 for Right): ");
+printf("Enter starting head position: ");
+scanf("%d", &head);
+printf("Enter direction (0 for Left, 1 for Right): ");
 scanf("%d", &direction);
-sortRequests(requests, requestSize);
-scan(requests, requestSize, headPosition, totalBlocks, direction);
-free(requests);
+scan(requests, n, head, direction, disk_size);
 return 0;
-}
-void sortRequests(int *requests, int size) {
-for (int i = 0; i < size - 1; i++) {
-for (int j = 0; j < size - i - 1; j++) {
-if (requests[j] > requests[j + 1]) {
-int temp = requests[j];
-requests[j] = requests[j + 1];
-requests[j + 1] = temp;
-}
-}
-}
-}
-void scan(int *requests, int size, int headPosition, int totalBlocks, int direction) {
-int headMovements = 0;
-printf("Serving requests:\n");
-if (direction == 0) {
-for (int i = headPosition; i >= 0; i--) {
-for (int j = 0; j < size; j++) {
-if (requests[j] == i) {
-printf("%d ", requests[j]);
-headMovements += abs(headPosition - requests[j]);
-headPosition = requests[j];
-}
-}
-}
-for (int i = 0; i <= totalBlocks; i++) {
-for (int j = 0; j < size; j++) {
-if (requests[j] == i) {
-printf("%d ", requests[j]);
-headMovements += abs(headPosition - requests[j]);
-headPosition = requests[j];
-}
-}
-}
-} else {
-for (int i = headPosition; i <= totalBlocks; i++) {
-for (int j = 0; j < size; j++) {
-if (requests[j] == i) {
-printf("%d ", requests[j]);
-headMovements += abs(headPosition - requests[j]);
-headPosition = requests[j];
-}
-}
-}
-for (int i = totalBlocks; i >= 0; i--) {
-for (int j = 0; j < size; j++) {
-if (requests[j] == i) {
-printf("%d ", requests[j]);
-headMovements += abs(headPosition - requests[j]);
-headPosition = requests[j];
-}
-}
-}
-}
-printf("\nTotal number of head movements: %d\n", headMovements);
 }
